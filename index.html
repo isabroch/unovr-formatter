@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/pokeapi-js-wrapper/dist/index.js"></script>
+    <script src="script.js" async></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form action="" id="pkmnDetails">
+      <fieldset>
+        <legend><h1>Creating Pokemon</h1></legend>
+        <div class="fields">
+          <img src="" id="imgPreview" alt=""/>
+
+          <label for="species"
+          >Species
+
+          <input type="text" id="species" name="species" />
+        </label>
+
+        <div class="pkmnDetails">
+
+
+          <div>
+            <label for="type_1"
+              >Type 1
+              <select name="type_1" id="type_1">
+                <option value="normal">Normal</option>
+                <option value="fire">Fire</option>
+                <option value="fighting">Fighting</option>
+                <option value="water">Water</option>
+                <option value="flying">Flying</option>
+                <option value="grass">Grass</option>
+                <option value="poison">Poison</option>
+                <option value="electric">Electric</option>
+                <option value="ground">Ground</option>
+                <option value="psychic">Psychic</option>
+                <option value="rock">Rock</option>
+                <option value="ice">Ice</option>
+                <option value="bug">Bug</option>
+                <option value="dragon">Dragon</option>
+                <option value="ghost">Ghost</option>
+                <option value="dark">Dark</option>
+                <option value="steel">Steel</option>
+                <option value="fairy">Fairy</option>
+              </select>
+            </label>
+            <label for="type_2"
+              >Type 2
+              <select name="type_2" id="type_2">
+                <option value="">-</option>
+                <option value="normal">Normal</option>
+                <option value="fire">Fire</option>
+                <option value="fighting">Fighting</option>
+                <option value="water">Water</option>
+                <option value="flying">Flying</option>
+                <option value="grass">Grass</option>
+                <option value="poison">Poison</option>
+                <option value="electric">Electric</option>
+                <option value="ground">Ground</option>
+                <option value="psychic">Psychic</option>
+                <option value="rock">Rock</option>
+                <option value="ice">Ice</option>
+                <option value="bug">Bug</option>
+                <option value="dragon">Dragon</option>
+                <option value="ghost">Ghost</option>
+                <option value="dark">Dark</option>
+                <option value="steel">Steel</option>
+                <option value="fairy">Fairy</option>
+              </select>
+            </label>
+          </div>
+
+           <div>
+             <label for="class"
+              >Class
+              <select name="pkmnClass" id="pkmnClass">
+                <option value="unequipped">Unequipped</option>
+                <option value="tank">Tank</option>
+                <option value="sweeper">Sweeper</option>
+                <option value="support">Support</option>
+              </select>
+                       </label>
+                       <label for="tier"
+              >Tier
+              <select name="pkmnTier" id="pkmnTier">
+                <option value="0">Tier 1</option>
+                <option value="1">Tier 2</option>
+                <option value="2">Tier 3</option>
+                <option value="3">Tier 4</option>
+                <option value="4">Tier 5</option>
+              </select>
+                       </label>
+           </div>
+        </div>
+
+          <label for="name"
+            >Name
+            <input type="text" id="name" name="name" />
+          </label>
+
+          <label for="gender"
+            >Gender
+
+            <input type="text" id="gender" name="gender" />
+          </label>
+
+          <div class="blank"></div>
+
+
+          <label for="img"
+            >Image URL
+
+            <input type="text" id="img" name="img" />
+          </label>
+
+            <label for="met_at_text"
+              >Met At (text)
+              <input type="text" id="met_at_text" name="met_at_text" />
+            </label>
+            <label for="met_at_url"
+              >Met At (url)
+              <input type="text" id="met_at_url" name="met_at_url" />
+            </label>
+
+
+            <label for="hp"
+            >HP
+
+            <input value="100" type="text" name="hp" id="hp" />
+          </label>
+
+          <label for="stat"
+            >Stat
+
+            <input value="ATK: 20" type="text" name="stat" id="stat" />
+          </label>
+
+          <label for="rarity"
+            >Rarity
+            <select name="rarity" id="rarity">
+              <option>Common (+0)</option>
+              <option>Uncommon (+5)</option>
+              <option>Rare (+10)</option>
+              <option>Very Rare (+15)</option>
+              <option>Legendary (+20)</option>
+            </select>
+          </label>
+
+          <label for="moveset"
+            >Moveset
+
+            <textarea name="moveset" id="moveset" rows="10"></textarea>
+          </label>
+
+          <label for="etc"
+            >Other Info
+
+            <textarea name="etc" id="etc"></textarea>
+          </label>
+
+          <input type="hidden" name="lvl_cap" id="lvl_cap" />
+        </div>
+      </fieldset>
+    </form>
+
+    <fieldset class="output">
+      <legend><h1>BBCode</h1></legend>
+      <output>...</output>
+    </fieldset>
+  </body>
+</html>
