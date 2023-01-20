@@ -50,6 +50,23 @@ h1 {
   gap: 1rem;
 }
 
+.buttons {
+  grid-column: 1/-1;
+  display: flex;
+  gap: 1rem;
+}
+
+.fields button {
+  --color: rgb(93, 93, 93);
+  flex: 1;
+  justify-self: end;
+  padding-inline: 1.5em;
+  padding-block: 0.5em;
+  border: var(--color) 1px solid;
+  border-radius: 6px;
+  color: var(--color);
+}
+
 
 
 @media (min-width: 800px) {
@@ -77,6 +94,7 @@ label {
 
 input, select, textarea {
   display: block;
+  min-width: 10ch;
 }
 
 .fields div:has(label) {
@@ -85,3 +103,21 @@ input, select, textarea {
   gap: inherit;
 }
 
+.pkmn-storage {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pkmn-storage button, #action {
+  text-transform: capitalize;
+}
+
+#delete {
+  --color: crimson;
+}
+
+.hide {
+  display: none;
+}

@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <form action="" id="pkmnDetails">
+    <form id="pkmnDetails">
       <fieldset>
-        <legend><h1>Creating Pokemon</h1></legend>
+        <legend><h1 id="action">Creating Pokemon</h1></legend>
         <div class="fields">
           <img src="" id="imgPreview" alt=""/>
 
@@ -88,11 +88,11 @@
                        <label for="tier"
               >Tier
               <select name="pkmnTier" id="pkmnTier">
-                <option value="0">Tier 1</option>
-                <option value="1">Tier 2</option>
-                <option value="2">Tier 3</option>
-                <option value="3">Tier 4</option>
-                <option value="4">Tier 5</option>
+                <option value="0">1</option>
+                <option value="1">2</option>
+                <option value="2">3</option>
+                <option value="3">4</option>
+                <option value="4">5</option>
               </select>
                        </label>
            </div>
@@ -164,7 +164,18 @@
           </label>
 
           <input type="hidden" name="lvl_cap" id="lvl_cap" />
+          <input type="hidden" name="pkmn_id" id="pkmn_id" />
+
+<div class="buttons">
+  <button type="reset" id="clear">Clear Form</button>
+  <button type="button" id="delete" class="hide">Delete</button>
+  <button type="submit" id="create">Submit</button>
+</div>
         </div>
+      </fieldset>
+
+      <fieldset class="pkmn-storage">
+        <legend><h1>Inventory</h1></legend>
       </fieldset>
     </form>
 
@@ -172,5 +183,7 @@
       <legend><h1>BBCode</h1></legend>
       <output>...</output>
     </fieldset>
+
+
   </body>
 </html>

@@ -124,7 +124,10 @@ const typeColors = {
   fairy: "#D685AD",
 };
 
-function getData(pkmnClass, pkmnTier) {
+let id = 1;
+let inventory = JSON.parse(localStorage.getItem('inventory')) ?? {};
+
+function getClassData(pkmnClass, pkmnTier) {
   if (pkmnClass === "unequipped") return classes[pkmnClass.toLowerCase()];
   return classes[pkmnClass.toLowerCase()][parseInt(pkmnTier)];
 }
@@ -171,7 +174,11 @@ function getMoveset(moveset, lvl_cap) {
 function generateBbcode(data) {
   const { met_at_url, etc, img, type_1, type_2, lvl_cap, moveset } = data;
   const { name, gender, species, met_at_text, pkmnClass, pkmnTier, rarity, stat, hp } = Object.entries(data).reduce((obj, i) => {
-    obj[i[0]] = i[1].toUpperCase();
+    try {
+      obj[i[0]] = i[1].toUpperCase();
+    } catch (error) {
+      obj[i[0]] = i[1];
+    }
     return obj;
   }, {});
 
@@ -179,7 +186,7 @@ function generateBbcode(data) {
   const types = [type_1, type_2].map((type) => {
     if (type) return `:${type}:`;
   }).join(" ").trim();
-  return `[table style="border-collapse:separate;border-spacing:5px;float:left;"][tbody][tr][td style="width:100px;height:100px;"][img style="width: 100px;" src="${img}"][/td][/tr]
+  return `[blockquote][table style="border-collapse:separate;border-spacing:5px;float:left;"][tbody][tr][td style="width:100px;height:100px;"][img style="width: 100px;" src="${img}"][/td][/tr]
 [tr]
 [td style="padding:3px;text-align:center;"][h1][b]${name}[/b][/h1][/td]
 [/tr]
@@ -200,15 +207,34 @@ function generateBbcode(data) {
 [tr]
 [td style="padding:3px; font-size: 10px;"][u]OTHER INFORMATION:[/u] ${etc}
 [/td][/tr]
-[/tbody][/table]
-`;
+[/tbody][/table][/blockquote]`;
 }
+
+function outputBbcode(pkmn = pokemonFromForm(document.querySelector('#pkmnDetails'))) {
+  const output = document.querySelector("output");
+  document.querySelector('#imgPreview').src = pkmn.img;
+  output.textContent = generateBbcode(pkmn);
+
+  if (pkmn.pkmn_id) {
+    showPkmnButtons(pkmn)
+  }
+}
+
+function showPkmnButtons(pkmn) {
+  document.querySelector('#action').textContent = `Editing ${pkmn.name} ∙ ${pkmn.species} (${pkmn.pkmnClass}${pkmn.pkmnClass !== 'unequipped' ? ` T${parseInt(pkmn.pkmnTier) + 1}` : ''})`;
+  document.querySelector('#delete').classList.remove('hide');
+  document.querySelector('#delete').textContent = `Delete ${pkmn.name}`;
+  document.querySelector('#create').textContent = `Update ${pkmn.name}`;
+  document.querySelector('#clear').textContent = `New Pokemon`;
+}
+
+outputBbcode();
 
 async function handleChange(e) {
   const form = e.currentTarget;
 
   if (e.target.id == "pkmnClass" || e.target.id == "pkmnTier") {
-    const {health, stat_name, stat_roll, lvl_cap} = getData(form.pkmnClass.value, form.pkmnTier.value);
+    const {health, stat_name, stat_roll, lvl_cap} = getClassData(form.pkmnClass.value, form.pkmnTier.value);
     form.hp.value = `${health}`;
     form.lvl_cap.value = `${lvl_cap}`;
     form.stat.value = `${stat_name}: ${stat_roll}`;
@@ -216,10 +242,11 @@ async function handleChange(e) {
 
   let pkmn;
 
-
   if (e.target.id == "species") {
     pkmn = form.species.value.toLowerCase();
     form.img.value = `https://img.pokemondb.net/sprites/home/normal/${pkmn.replace(" ", "-")}.png`
+    document.querySelector('#imgPreview').src = form.img.value;
+
     try {
       const p = new Pokedex.Pokedex();
       const pkmnData = await p.getPokemonByName(pkmn.replace(" ", "-"));
@@ -229,20 +256,118 @@ async function handleChange(e) {
       console.warn(`Couldn't automatically update types. Did you spell ${pkmn} correctly?`)
     }
   }
-
-
-  outputBbcode(form);
 }
 
-function outputBbcode(form) {
-  const output = document.querySelector("output");
-
+function pokemonFromForm(form) {
   const formData = new FormData(form);
-  document.querySelector('#imgPreview').src = formData.get("img");
-  output.textContent = generateBbcode(Object.fromEntries(formData));
+  const pkmn = Object.fromEntries(formData);
+  return pkmn;
 }
 
-outputBbcode(document.querySelector('form'));
-
+handleReset();
 
 document.querySelector("#pkmnDetails").addEventListener("change", handleChange);
+
+document.querySelector("#pkmnDetails").addEventListener("click", e => {
+  const pkmn = pokemonFromForm(e.currentTarget);
+
+  switch (e.target.id) {
+    case 'delete':
+      handleReset();
+      deletePkmn(pkmn);
+      break;
+
+    case 'clear':
+      handleReset();
+      break;
+
+    case 'create':
+      e.preventDefault();
+      outputBbcode(pkmn);
+      savePkmn(pkmn);
+      return false;
+      break;
+
+    default:
+      break;
+  }
+} );
+
+function handleReset() {
+  document.querySelector('#pkmnDetails').reset();
+  document.querySelector('#pkmn_id').value = ""; // hidden field, manual reset
+  document.querySelector('#lvl_cap').value = ""; // hidden field, manual reset
+  document.querySelector('#imgPreview').src = "";
+  document.querySelector("#delete").classList.add('hide');
+  document.querySelector("#create").textContent = 'Submit';
+  document.querySelector("#clear").textContent = 'Clear Form';
+  document.querySelector('output').textContent = '';
+  document.querySelector('#action').textContent = "Creating Pokemon";
+}
+
+function deletePkmn(pkmn) {
+  document.querySelector(`button[data-id="${pkmn.pkmn_id}"]`).remove();
+  delete inventory[pkmn.pkmn_id];
+  localStorage.setItem('inventory', JSON.stringify(inventory));
+
+}
+
+
+function savePkmn(pkmn) {
+  if (!pkmn.pkmn_id)
+  { pkmn.pkmn_id = id++; }
+
+  makePkmnButton(pkmn);
+
+  document.querySelector('#pkmnDetails').pkmn_id = pkmn.pkmn_id;
+
+  inventory[pkmn.pkmn_id] = pkmn;
+
+  localStorage.setItem('inventory', JSON.stringify(inventory));
+
+  showPkmnButtons(pkmn);
+}
+
+function makePkmnButton(pkmn) {
+  let button = document.querySelector(`.pkmn-storage [data-id="${pkmn.pkmn_id}"]`) ?? document.createElement('button');
+
+  button.dataset.id = pkmn.pkmn_id;
+  button.type = "button";
+  button.textContent = `${pkmn.name} ∙ ${pkmn.species} (${pkmn.pkmnClass}${pkmn.pkmnClass !== 'unequipped' ? ` T${parseInt(pkmn.pkmnTier) + 1}` : ''})`;
+
+  if (button.parentElement === null) {
+    document.querySelector('.pkmn-storage').insertAdjacentElement('beforeend', button);
+  }
+}
+
+function loadInventory() {
+  if (!inventory || Object.entries(inventory).length == 0) {
+    return;
+  }
+
+  // get highest id
+  Object.entries(inventory).forEach( ([, pkmn]) => {
+    const currId = parseInt(pkmn.pkmn_id);
+    if (currId >= id) {
+      id = currId + 1;
+    }
+
+    makePkmnButton(pkmn);
+  })
+}
+
+loadInventory();
+
+function loadPokemon(id) {
+  const pkmn = inventory[id];
+  for (const key in pkmn) {
+    document.getElementById(key).value = pkmn[key];
+  }
+  outputBbcode(pkmn);
+  showPkmnButtons(pkmn);
+}
+
+document.querySelector('.pkmn-storage').addEventListener('click', (e) => {
+  if (!e.target.dataset.id) return;
+  loadPokemon(e.target.dataset.id);
+});
