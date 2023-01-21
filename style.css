@@ -56,12 +56,15 @@ h1 {
   gap: 1rem;
 }
 
+button {
+  padding-inline: 1.5em;
+  padding-block: 0.5em;
+}
+
 .fields button {
   --color: rgb(93, 93, 93);
   flex: 1;
   justify-self: end;
-  padding-inline: 1.5em;
-  padding-block: 0.5em;
   border: var(--color) 1px solid;
   border-radius: 6px;
   color: var(--color);
